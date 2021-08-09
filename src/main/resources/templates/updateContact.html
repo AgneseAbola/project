@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts</title>
+</head>
+<body>
+<div>
+    <h1> Contact </h1>
+    <hr>
+    <h2> Update Contact</h2>
+
+        <form action="#" th:action="@{/saveContact}" th:object="${contact}" th:method="post">
+            <input type="hidden" th:field="*{id}">
+            <input type="text" th:field="*{name}">
+            <input type="text" th:field="*{surname}">
+            <input type="text" th:field="*{email}">
+            <input type="text" th:field="*{phone}">
+
+            <button type="submit"> Update </button>
+        </form>
+
+</div>
+<!--    <div>-->
+<!--        <form method="put"-->
+<!--              th:action="@{/contactForUpdate/{id}(id=${contact.id})" th:object="${contact}"-->
+<!--              name="contact">-->
+<!--            <input type="hidden" name="_method" value="put">-->
+<!--            <input type="text" th:field="*{name}">-->
+<!--            <input type="text" th:field="*{surname}">-->
+<!--            <input type="text" th:field="*{email}">-->
+<!--            <input type="text" th:field="*{phone}">-->
+
+<!--            <button type="submit"> Update</button>-->
+<!--        </form>-->
+<!--    </div>-->
+
+<!--    <form th:action="@{/contactForDelete/{id}(id=${contact.id})}"-->
+<!--          th:method="delete">-->
+<!--        <input type="hidden" name="_method" value="delete">-->
+<!--        <button class="delete" onclick="return confirmation()">-->
+<!--            <p class="delete_p">Delete</p>-->
+<!--        </button>-->
+<!--    </form>-->
+<!--</div>-->
+</body>
+</html>
