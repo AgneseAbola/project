@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ContactService {
     List<Contact> getAllContacts();
-    void saveContact(Contact contact);
+    Contact saveContact(Contact contact);
     Optional<Contact> getContactById(int id);
     void deleteContact(int id);
 }

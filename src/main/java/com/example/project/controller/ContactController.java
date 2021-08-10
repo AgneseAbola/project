@@ -18,6 +18,8 @@ public class ContactController {
     @Autowired
     private ContactService service;
 
+    private static final String CONTACT_STRING = "contact";
+
     @GetMapping("/")
     public String viewList(Model model) {
         model.addAttribute("contacts", service.getAllContacts());
@@ -27,7 +29,7 @@ public class ContactController {
     @GetMapping("/newContactForm")
     public String newContactForm(Model model) {
         Contact contact = new Contact();
-        model.addAttribute("contact", contact);
+        model.addAttribute(CONTACT_STRING, contact);
         return "newContact";
     }
 
@@ -40,7 +42,7 @@ public class ContactController {
     @GetMapping("/contactForUpdate/{id}")
     public String contactForUpdate(@PathVariable(value = "id") int id, Model model) {
         Optional<Contact> contact = service.getContactById(id);
-        model.addAttribute("contact", contact);
+        model.addAttribute(CONTACT_STRING, contact);
         return "updateContact";
     }
 
@@ -53,7 +55,10 @@ public class ContactController {
     @GetMapping("/{id}")
     public String getContactById(Model model, @PathVariable("id") int id) {
         Optional<Contact> contact = service.getContactById(id);
-        model.addAttribute("contact", contact.get());
+        if (contact.isEmpty()) {
+            return "redirect:/";
+        }
+        model.addAttribute(CONTACT_STRING, contact.get());
         return "updateContact";
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
@@ -104,5 +105,14 @@ class ContactControllerTest {
                 .andExpect(status().isCreated());
 
         verify(service, times(1)).saveContact(contactModel);
+    }
+
+    @Test
+    void getContactByIdPositive() throws Exception {
+        when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
+        mockMvc.perform(get("http://localhost:8080/" + anyInt()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("contact", contactModel))
+                .andExpect(view().name("updateContact"));
     }
 }

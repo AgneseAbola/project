@@ -1,12 +1,15 @@
 package com.example.project.service;
 
+import com.example.project.mapper.ContactMapper;
 import com.example.project.model.Contact;
+import com.example.project.repository.ContactDAO;
 import com.example.project.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ContactServiceImpl implements ContactService{
@@ -16,17 +19,20 @@ public class ContactServiceImpl implements ContactService{
 
     @Override
     public List<Contact> getAllContacts() {
-        return repo.findAll();
+        List<ContactDAO> contactDAOList = repo.findAll();
+        return contactDAOList.stream().map(ContactMapper::mapFromDAO).collect(Collectors.toList());
     }
 
     @Override
-    public void saveContact(Contact contact) {
-        repo.save(contact);
+    public Contact saveContact(Contact contact) {
+        ContactDAO contactDAO = repo.save(ContactMapper.mapToDAO(contact));
+        return ContactMapper.mapFromDAO(contactDAO);
     }
 
     @Override
     public Optional<Contact> getContactById(int id) {
-        return repo.findById(id);
+        return repo.findById(id)
+                .flatMap(contact -> Optional.ofNullable(ContactMapper.mapFromDAO(contact)));
     }
 
     @Override
