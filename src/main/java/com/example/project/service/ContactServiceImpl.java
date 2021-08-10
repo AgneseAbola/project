@@ -39,4 +39,11 @@ public class ContactServiceImpl implements ContactService{
     public void deleteContact(int id) {
         repo.deleteById(id);
     }
+
+    @Override
+    public Contact editContactById(Contact contact) {
+        ContactDAO contactDAO = ContactMapper.mapToDAO(contact);
+        ContactDAO updateContact = repo.save(contactDAO);
+        return ContactMapper.mapFromDAO(updateContact);
+    }
 }

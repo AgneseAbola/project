@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.ui.Model;
@@ -18,10 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,7 +60,6 @@ class ContactControllerTest {
     private final Contact contactModel = getContact(1, "name1", "surname1", "email1", 111);
 
 
-
     @Test
     void getContactList() throws Exception {
         when(service.getAllContacts()).thenReturn(contactList());
@@ -85,27 +82,29 @@ class ContactControllerTest {
 
     @Test
     void deleteContactTest() throws Exception {
-        int id=1;
+        int id = 1;
         mockMvc.perform(get("http://localhost:8080/contactForDelete/" + id))
                 .andExpect(status().isFound());
-        String actual = controller.deleteContact(id);
+        String actual = controller.deleteContactById(id);
         assertNotNull(actual);
     }
 
     @Test
-    void updateContact() throws Exception {
-        when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
-
-        ResultActions mvcRes = mockMvc.perform(MockMvcRequestBuilders
-                        .get("http://localhost:8080/1"))
-                      //  .content(asJsonString(employeeType))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.jsonPath("id").value(1))
-                .andExpect(status().isCreated());
-
-        verify(service, times(1)).saveContact(contactModel);
+    void getContactListEmpty() throws Exception{
+        when(service.getAllContacts()).thenReturn(EMPTY_LIST);
+        this.mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("contacts"));
     }
+
+//    @Test
+//    void updateContact() throws Exception {
+//        when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
+//
+//        ResultActions mvcRes = mockMvc.perform(MockMvcRequestBuilders
+//                        .get("http://localhost:8080/1"))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     void getContactByIdPositive() throws Exception {

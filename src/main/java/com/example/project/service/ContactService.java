@@ -10,4 +10,5 @@ public interface ContactService {
     Contact saveContact(Contact contact);
     Optional<Contact> getContactById(int id);
     void deleteContact(int id);
+    Contact editContactById(Contact contact);
 }

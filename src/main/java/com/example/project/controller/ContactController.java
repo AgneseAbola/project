@@ -3,13 +3,17 @@ package com.example.project.controller;
 import com.example.project.model.Contact;
 import com.example.project.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,45 +24,49 @@ public class ContactController {
 
     private static final String CONTACT_STRING = "contact";
 
-    @GetMapping("/")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public String viewList(Model model) {
-        model.addAttribute("contacts", service.getAllContacts());
+        List<Contact> list = service.getAllContacts();
+        model.addAttribute("contacts", list);
         return "contacts";
     }
 
-    @GetMapping("/newContactForm")
+    @GetMapping(value = "/newContactForm", produces = MediaType.APPLICATION_JSON_VALUE)
     public String newContactForm(Model model) {
         Contact contact = new Contact();
         model.addAttribute(CONTACT_STRING, contact);
         return "newContact";
     }
 
-    @PostMapping("/saveContact")
+    @PostMapping(value = "/saveContact", produces = MediaType.APPLICATION_JSON_VALUE)
     public String saveContact(@ModelAttribute("contact") Contact contact) {
         service.saveContact(contact);
         return "redirect:/";
     }
 
-    @GetMapping("/contactForUpdate/{id}")
-    public String contactForUpdate(@PathVariable(value = "id") int id, Model model) {
-        Optional<Contact> contact = service.getContactById(id);
-        model.addAttribute(CONTACT_STRING, contact);
-        return "updateContact";
-    }
-
-    @GetMapping("/contactForDelete/{id}")
-    public String deleteContact(@PathVariable(value = "id") int id) {
-        service.deleteContact(id);
-        return "redirect:/";
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getContactById(Model model, @PathVariable("id") int id) {
         Optional<Contact> contact = service.getContactById(id);
         if (contact.isEmpty()) {
-            return "redirect:/";
+            return "errorContact";
         }
         model.addAttribute(CONTACT_STRING, contact.get());
-        return "updateContact";
+        return "updateAndDeleteContact";
+    }
+
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String editContactById(@PathVariable("id") int id, @ModelAttribute("contact") Contact contact) {
+        Optional<Contact> contactById = service.getContactById(id);
+        if (contactById.isPresent()) {
+            contact.setId(id);
+            service.saveContact(contact);
+        }
+        return "redirect:/";
+    }
+
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String deleteContactById(@PathVariable("id") int id) {
+        service.deleteContact(id);
+        return "redirect:/";
     }
 }
