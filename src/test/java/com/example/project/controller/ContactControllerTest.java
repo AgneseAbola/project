@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
@@ -20,8 +19,13 @@ import java.util.Optional;
 import static java.util.Collections.EMPTY_LIST;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -59,9 +63,8 @@ class ContactControllerTest {
 
     private final Contact contactModel = getContact(1, "name1", "surname1", "email1", 111);
 
-
     @Test
-    void getContactList() throws Exception {
+    void getContactListPositiveTest() throws Exception {
         when(service.getAllContacts()).thenReturn(contactList());
         mockMvc.perform(get("http://localhost:8080/"))
                 .andExpect(status().isOk())
@@ -81,37 +84,49 @@ class ContactControllerTest {
     }
 
     @Test
-    void deleteContactTest() throws Exception {
-        int id = 1;
-        mockMvc.perform(get("http://localhost:8080/contactForDelete/" + id))
-                .andExpect(status().isFound());
-        String actual = controller.deleteContactById(id);
-        assertNotNull(actual);
+    void deleteContactByIdTest() throws Exception {
+        doNothing().when(service).deleteContact(anyInt());
+        mockMvc.perform(delete("http://localhost:8080/" + anyInt()))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/"));
     }
 
     @Test
-    void getContactListEmpty() throws Exception{
+    void getContactListEmptyTest() throws Exception{
         when(service.getAllContacts()).thenReturn(EMPTY_LIST);
         this.mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("contacts"));
     }
 
-//    @Test
-//    void updateContact() throws Exception {
-//        when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
-//
-//        ResultActions mvcRes = mockMvc.perform(MockMvcRequestBuilders
-//                        .get("http://localhost:8080/1"))
-//                .andExpect(status().isOk());
-//    }
-
     @Test
-    void getContactByIdPositive() throws Exception {
+    void getContactByIdPositiveTest() throws Exception {
         when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
         mockMvc.perform(get("http://localhost:8080/" + anyInt()))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("contact", contactModel))
-                .andExpect(view().name("updateContact"));
+                .andExpect(model().attribute("contact", contactModel))
+                .andExpect(view().name("updateAndDeleteContact"));
+    }
+
+    @Test
+    void editContactPositiveTest() throws Exception {
+        when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
+        mockMvc.perform(put("http://localhost:8080/" + contactModel.getId())
+                        .param("contact.id", String.valueOf(contactModel.getId()))
+                        .param("contact.name", contactModel.getName())
+                        .param("contact.surname", contactModel.getSurname())
+                        .param("contact.email", contactModel.getEmail())
+                        .param("contact.phone", String.valueOf(contactModel.getPhone())))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void saveContactPositiveTest() throws Exception {
+        when(service.saveContact(contactModel)).thenReturn(contactModel);
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/")
+                        .param("contact", contactModel.getName()))
+                .andExpect(status().is3xxRedirection())
+               // .andExpect(MockMvcResultMatchers.flash().attribute(successMessages, successMessage))
+                .andExpect(redirectedUrl("/"));
     }
 }

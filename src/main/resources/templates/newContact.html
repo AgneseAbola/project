@@ -10,7 +10,7 @@
     <hr>
     <h2> Add Contact</h2>
 
-    <form action="#" th:action="@{/saveContact}" th:object="${contact}" , method="post">
+    <form action="#" th:action="@{/}" th:object="${contact}" method="post">
         <input type="text" th:field="*{name}" placeholder="name">
         <input type="text" th:field="*{surname}" placeholder="surname">
         <input type="text" th:field="*{email}" placeholder="email">

@@ -8,20 +8,8 @@
 <div>
     <h1> Contact </h1>
     <hr>
-    <h2> Update Contact</h2>
+    <h2> Update or Delete Contact</h2>
 
-<!--        <form action="#" th:action="@{/saveContact}" th:object="${contact}" th:method="post">-->
-<!--            <input type="hidden" th:field="*{id}">-->
-<!--            <input type="text" th:field="*{name}">-->
-<!--            <input type="text" th:field="*{surname}">-->
-<!--            <input type="text" th:field="*{email}">-->
-<!--            <input type="text" th:field="*{phone}">-->
-
-<!--            <button type="submit"> Update </button>-->
-<!--            <button type="submit"> Delete </button>-->
-<!--        </form>-->
-
-</div>
     <div>
         <form action="#" th:action="@{/{id}(id=${contact.id})}" th:object="${contact}" th:method="put">
             <input type="hidden" name="_method" value="put">
@@ -39,5 +27,6 @@
         <button type="submit">Delete<a th:href="@{/}"></a></button>
 
     </form>
+</div>
 </body>
 </html>

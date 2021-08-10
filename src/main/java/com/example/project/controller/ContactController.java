@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,7 @@ public class ContactController {
     private ContactService service;
 
     private static final String CONTACT_STRING = "contact";
+    private static final String REDIRECT = "redirect:/";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public String viewList(Model model) {
@@ -38,10 +42,14 @@ public class ContactController {
         return "newContact";
     }
 
-    @PostMapping(value = "/saveContact", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String saveContact(@ModelAttribute("contact") Contact contact) {
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public String saveContact(@Valid @ModelAttribute("contact") Contact contact, BindingResult result, RedirectAttributes attributes) {
+//        if (result.hasErrors()) {
+//            attributes.addFlashAttribute("errorMessage", result.getFieldError().getDefaultMessage());
+//            return "redirect:/";
+//        }
         service.saveContact(contact);
-        return "redirect:/";
+        return REDIRECT;
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,12 +69,12 @@ public class ContactController {
             contact.setId(id);
             service.saveContact(contact);
         }
-        return "redirect:/";
+        return REDIRECT;
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String deleteContactById(@PathVariable("id") int id) {
         service.deleteContact(id);
-        return "redirect:/";
+        return REDIRECT;
     }
 }
