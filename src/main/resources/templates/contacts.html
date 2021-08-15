@@ -2,32 +2,69 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1 shrink-to-fit=no">
     <title>Contacts</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.css"/>
+
 </head>
 <body>
-<div align="center">
-    <a th:href="@{/newContactForm}"> Add New Contact</a>
-    <h1>Contacts</h1>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="contact : ${contacts}">
-            <td th:text="${contact.name}"></td>
-            <td th:text="${contact.surname}"></td>
-            <td th:text="${contact.email}"></td>
-            <td th:text="${contact.phone}"></td>
-            <td><a th:href="@{/{id}(id=${contact.id})}">Update/Delete</a></td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container">
+    <div style="text-align: center;">
+        <h2 style="margin-top: 50px;">Contacts</h2>
+        <table class=" table table-fluid table-bordered table-condensed table-striped table-hover" id="example">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center clickable-row" th:each="contact : ${contacts}"
+                th:onclick="|window.location.href='@{/{id}'(id=${contact.getId()})}|">
+                <td>
+                    <span th:text="${contact.name}"></span>
+                </td>
+                <td>
+                    <span th:text="${contact.surname}"></span>
+                </td>
+                <td>
+                    <span th:text="${contact.email}"></span>
+                </td>
+                <td>
+                    <span th:text="${contact.phone}"></span>
+                </td>
+            </tr>
+            <!--            <tr th:each="contact : ${contacts}">-->
+            <!--                <td th:text="${contact.name}"></td>-->
+            <!--                <td th:text="${contact.surname}"></td>-->
+            <!--                <td th:text="${contact.email}"></td>-->
+            <!--                <td th:text="${contact.phone}"></td>-->
+            <!--                <td><a th:href="@{/{id}(id=${contact.id})}">Update/Delete</a></td>-->
+            <!--            </tr>-->
+            </tbody>
+        </table>
+    </div>
+    <div class="form-row text-center" style="margin-top: 20px;">
+        <div class="col-12">
+            <button class="button" type="submit" id="submitButton">
+                <a th:href="@{/newContactForm}">Add New Contact</a>
+            </button>
+        </div>
+    </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.js"></script>
+<script>
+     $(document).ready(function() {
+     $('#example').DataTable();
+ });
+</script>
 </body>
 </html>
