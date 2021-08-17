@@ -8,24 +8,25 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/contact.css}">
 
 </head>
 <body>
 <div class="container">
-    <div style="text-align: center;">
-        <h2 style="margin-top: 50px;">Contacts</h2>
+    <div class="container main">
+        <h2>Contacts</h2>
         <table class=" table table-fluid table-bordered table-condensed table-striped table-hover" id="example">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Email</th>
-                <th>Phone</th>
+                <th id="name">Name</th>
+                <th id="surname">Surname</th>
+                <th id="email">Email</th>
+                <th id="phone">Phone</th>
+                <th id="action">Action</th>
             </tr>
             </thead>
             <tbody>
-            <tr class="text-center clickable-row" th:each="contact : ${contacts}"
-                th:onclick="|window.location.href='@{/{id}'(id=${contact.getId()})}|">
+            <tr class="text-center clickable-row" th:each="contact : ${contacts}">
                 <td>
                     <span th:text="${contact.name}"></span>
                 </td>
@@ -38,21 +39,17 @@
                 <td>
                     <span th:text="${contact.phone}"></span>
                 </td>
+                <td>
+                    <span><a th:href="@{/{id}(id=${contact.id})}">Update/Delete</a></span>
+                </td>
             </tr>
-            <!--            <tr th:each="contact : ${contacts}">-->
-            <!--                <td th:text="${contact.name}"></td>-->
-            <!--                <td th:text="${contact.surname}"></td>-->
-            <!--                <td th:text="${contact.email}"></td>-->
-            <!--                <td th:text="${contact.phone}"></td>-->
-            <!--                <td><a th:href="@{/{id}(id=${contact.id})}">Update/Delete</a></td>-->
-            <!--            </tr>-->
             </tbody>
         </table>
     </div>
     <div class="form-row text-center" style="margin-top: 20px;">
         <div class="col-12">
-            <button class="button" type="submit" id="submitButton">
-                <a th:href="@{/newContactForm}">Add New Contact</a>
+            <button class="btn btn-primary" type="submit" id="submitButton">
+                <a th:href="@{/newContactForm}" style="font-color: black:">Add New Contact</a>
             </button>
         </div>
     </div>

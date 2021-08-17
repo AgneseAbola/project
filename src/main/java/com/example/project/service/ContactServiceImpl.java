@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ContactServiceImpl implements ContactService{
+public class ContactServiceImpl implements ContactService {
 
     @Autowired
     private ContactRepository repo;
@@ -31,8 +31,7 @@ public class ContactServiceImpl implements ContactService{
 
     @Override
     public Optional<Contact> getContactById(int id) {
-        return repo.findById(id)
-                .flatMap(contact -> Optional.ofNullable(ContactMapper.mapFromDAO(contact)));
+        return repo.findById(id).flatMap(contact -> Optional.ofNullable(ContactMapper.mapFromDAO(contact)));
     }
 
     @Override
