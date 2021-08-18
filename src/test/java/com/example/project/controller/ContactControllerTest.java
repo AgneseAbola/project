@@ -44,6 +44,9 @@ class ContactControllerTest {
     @Mock
     private Model model;
 
+    private static final String URL_HOME = "http://localhost:8080/";
+    private static final String VIEW_HOME = "contacts";
+
     private Contact getContact(int id, String name, String surname, String email, int phone) {
         Contact contact = new Contact();
         contact.setId(id);
@@ -66,10 +69,9 @@ class ContactControllerTest {
     @Test
     void getContactListPositiveTest() throws Exception {
         when(service.getAllContacts()).thenReturn(contactList());
-        mockMvc.perform(get("http://localhost:8080/"))
+        mockMvc.perform(get(URL_HOME))
                 .andExpect(status().isOk())
-                .andExpect(view().name("contacts"));
-
+                .andExpect(view().name(VIEW_HOME));
         String actual = controller.viewList(model);
         assertNotNull(actual);
     }
@@ -77,7 +79,7 @@ class ContactControllerTest {
     @Test
     void showAddContactFormTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("http://localhost:8080/newContactForm")
+                        .get(URL_HOME + "/newContactForm")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(view().name("newContact"));
@@ -86,7 +88,7 @@ class ContactControllerTest {
     @Test
     void deleteContactByIdTest() throws Exception {
         doNothing().when(service).deleteContact(anyInt());
-        mockMvc.perform(delete("http://localhost:8080/" + anyInt()))
+        mockMvc.perform(delete(URL_HOME + anyInt()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/"));
     }
@@ -94,15 +96,15 @@ class ContactControllerTest {
     @Test
     void getContactListEmptyTest() throws Exception{
         when(service.getAllContacts()).thenReturn(EMPTY_LIST);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get(URL_HOME))
                 .andExpect(status().isOk())
-                .andExpect(view().name("contacts"));
+                .andExpect(view().name(VIEW_HOME));
     }
 
     @Test
     void getContactByIdPositiveTest() throws Exception {
         when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
-        mockMvc.perform(get("http://localhost:8080/" + anyInt()))
+        mockMvc.perform(get(URL_HOME + anyInt()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("contact", contactModel))
                 .andExpect(view().name("updateAndDeleteContact"));
@@ -111,7 +113,7 @@ class ContactControllerTest {
     @Test
     void editContactPositiveTest() throws Exception {
         when(service.getContactById(anyInt())).thenReturn(Optional.of(contactModel));
-        mockMvc.perform(put("http://localhost:8080/" + contactModel.getId())
+        mockMvc.perform(put(URL_HOME + contactModel.getId())
                         .param("contact.id", String.valueOf(contactModel.getId()))
                         .param("contact.name", contactModel.getName())
                         .param("contact.surname", contactModel.getSurname())
@@ -123,10 +125,9 @@ class ContactControllerTest {
     @Test
     void saveContactPositiveTest() throws Exception {
         when(service.saveContact(contactModel)).thenReturn(contactModel);
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/")
+        mockMvc.perform(MockMvcRequestBuilders.post(URL_HOME)
                         .param("contact", contactModel.getName()))
                 .andExpect(status().is3xxRedirection())
-               // .andExpect(MockMvcResultMatchers.flash().attribute(successMessages, successMessage))
                 .andExpect(redirectedUrl("/"));
     }
 }

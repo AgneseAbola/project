@@ -13,26 +13,26 @@
         <h2>Add New Contact</h2>
         <form action="#" th:action="@{/}" th:object="${contact}" method="post">
             <div>
-                <label for="inputName">Name</label>
+                <label style="font-weight: bold;" for="inputName">Name</label>
                 <input class="form-control" type="text" th:field="*{name}" placeholder="name" id="inputName">
             </div>
             <div>
-                <label for="inputSurname">Surname</label>
+                <label style="font-weight: bold;" for="inputSurname">Surname</label>
                 <input class="form-control" type="text" th:field="*{surname}" placeholder="surname" id="inputSurname">
             </div>
             <div>
-                <label for="inputEmail">Email</label>
+                <label style="font-weight: bold;" for="inputEmail">Email</label>
                 <input class="form-control" type="email" th:field="*{email}" placeholder="email" id="inputEmail">
             </div>
             <div>
-                <label for="inputPhone">Phone</label>
+                <label style="font-weight: bold;" for="inputPhone">Phone</label>
                 <input class="form-control" type="number" th:field="*{phone}" placeholder="phone" id="inputPhone">
             </div>
             <div>
                 <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Save</button>
             </div>
-    </form>
-</div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

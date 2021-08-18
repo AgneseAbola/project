@@ -25,15 +25,16 @@ public class ContactController {
 
     private static final String CONTACT_STRING = "contact";
     private static final String REDIRECT = "redirect:/";
+    private static final String ID = "/{id}";
 
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public String viewList(Model model) {
         List<Contact> list = service.getAllContacts();
         model.addAttribute("contacts", list);
         return "contacts";
     }
 
-    @GetMapping(value = "/newContactForm")
+    @GetMapping(value = "/newContactForm", produces = MediaType.APPLICATION_JSON_VALUE)
     public String newContactForm(Model model) {
         Contact contact = new Contact();
         model.addAttribute(CONTACT_STRING, contact);
@@ -41,12 +42,12 @@ public class ContactController {
     }
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String saveContact(@Valid @ModelAttribute("contact") Contact contact) {
+    public String saveContact(@Valid @ModelAttribute(CONTACT_STRING) Contact contact) {
         service.saveContact(contact);
         return REDIRECT;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getContactById(Model model, @PathVariable("id") int id) {
         Optional<Contact> contact = service.getContactById(id);
         if (contact.isEmpty()) {
@@ -56,7 +57,7 @@ public class ContactController {
         return "updateAndDeleteContact";
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public String editContactById(@PathVariable("id") int id, @ModelAttribute("contact") Contact contact) {
         Optional<Contact> contactById = service.getContactById(id);
         if (contactById.isPresent()) {
@@ -66,7 +67,7 @@ public class ContactController {
         return REDIRECT;
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public String deleteContactById(@PathVariable("id") int id) {
         service.deleteContact(id);
         return REDIRECT;

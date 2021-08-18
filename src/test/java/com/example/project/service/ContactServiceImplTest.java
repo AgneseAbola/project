@@ -117,20 +117,20 @@ class ContactServiceImplTest {
 
     @Test
     void deleteContactByIdTestNegative() {
-        doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(repo).deleteById(1);
+        doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(repo).deleteById(anyInt());
         assertThrows(HttpClientErrorException.class, () ->
-                service.deleteContact(1));
+                service.deleteContact(anyInt()));
     }
 
     @Test
-    void postContactTestPositive() {
+    void saveContactTestPositive() {
         when(repo.save(any(ContactDAO.class))).thenReturn(contactDAO);
         service.saveContact(contact);
         assertEquals(contact.getName(), ContactMapper.mapFromDAO(contactDAO).getName());
     }
 
     @Test
-    void postContactTestNegative() {
+    void saveContactTestNegative() {
         when(service.saveContact(contact)).thenThrow(HttpClientErrorException.class);
         assertThrows(HttpClientErrorException.class, () ->
                 service.saveContact(ContactMapper.mapFromDAO(contactDAO)));
